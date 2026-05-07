@@ -105,9 +105,6 @@ export function BalanceForecastCard({
   const onCardHover = () => setIsCardHovered(true);
   const onCardHoverEnd = () => setIsCardHovered(false);
 
-  const lowestPoint = forecastData?.lowestBalance;
-  const hasNegative = lowestPoint && lowestPoint.balance < 0;
-
   const chartRange = isPlaceholderData
     ? committedChartRange.current
     : { start, end };
@@ -123,6 +120,8 @@ export function BalanceForecastCard({
     end: chartRange.end,
     granularity: 'Monthly',
   });
+  const endingPoint = chartData.at(-1);
+  const hasNegativeEndingBalance = endingPoint && endingPoint.balance < 0;
   const isUpdatingForecast = isFetching && isPlaceholderData;
   const todayReferenceDate = monthUtils.currentMonth();
   const showsTodayReferenceLine = chartData.some(
@@ -185,24 +184,26 @@ export function BalanceForecastCard({
             />
             <DateRange start={start} end={end} />
           </View>
-          {lowestPoint && (
+          {endingPoint && (
             <View style={{ textAlign: 'right' }}>
               <Block
                 style={{
                   ...styles.mediumText,
                   fontWeight: 500,
                   marginBottom: 5,
-                  color: hasNegative ? theme.errorText : theme.pageText,
+                  color: hasNegativeEndingBalance
+                    ? theme.errorText
+                    : theme.pageText,
                 }}
               >
                 <PrivacyFilter activationFilters={[!isCardHovered]}>
-                  <Trans>Lowest</Trans>:{' '}
-                  {format(lowestPoint.balance, 'financial')}
+                  <Trans>Ending</Trans>:{' '}
+                  {format(endingPoint.balance, 'financial')}
                 </PrivacyFilter>
               </Block>
               <PrivacyFilter activationFilters={[!isCardHovered]}>
                 <Block style={{ fontSize: 12, color: theme.pageTextLight }}>
-                  {lowestPoint.date}
+                  {endingPoint.date}
                 </Block>
               </PrivacyFilter>
             </View>

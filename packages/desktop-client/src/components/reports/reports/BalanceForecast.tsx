@@ -278,7 +278,7 @@ function BalanceForecastInner({ widget }: BalanceForecastInnerProps) {
     return <LoadingIndicator />;
   }
 
-  const lowestPoint = forecastData?.lowestBalance;
+  const endingPoint = chartData.at(-1);
   const hasNegativeBalance = chartData.some(d => d.balance < 0);
   const todayReferenceDate =
     granularity === 'Daily'
@@ -344,7 +344,7 @@ function BalanceForecastInner({ widget }: BalanceForecastInnerProps) {
           <div style={{ color: theme.errorText, marginBottom: 20 }}>
             {errorMessage}
           </div>
-        ) : lowestPoint ? (
+        ) : endingPoint ? (
           <View
             style={{
               textAlign: 'right',
@@ -358,16 +358,15 @@ function BalanceForecastInner({ widget }: BalanceForecastInnerProps) {
                 fontWeight: 400,
                 marginBottom: 5,
                 color:
-                  lowestPoint.balance < 0 ? theme.errorText : theme.pageText,
+                  endingPoint.balance < 0 ? theme.errorText : theme.pageText,
               }}
             >
               <PrivacyFilter>
-                {format(lowestPoint.balance, 'financial')}
+                {format(endingPoint.balance, 'financial')}
               </PrivacyFilter>
             </View>
             <View style={{ color: theme.pageTextLight }}>
-              <Trans>Lowest Point</Trans>: {lowestPoint.date}
-              {lowestPoint.accountName && <> ({lowestPoint.accountName})</>}
+              <Trans>Ending Balance</Trans>: {endingPoint.date}
             </View>
           </View>
         ) : null}
