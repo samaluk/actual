@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildBalanceForecastChartData,
   countForecastScheduledOccurrences,
+  getLowestChartDataPoint,
 } from './balanceForecastChartData';
 
 describe('buildBalanceForecastChartData', () => {
@@ -255,5 +256,21 @@ describe('countForecastScheduledOccurrences', () => {
     });
 
     expect(count).toBe(2);
+  });
+});
+
+describe('getLowestChartDataPoint', () => {
+  it('returns the lowest visible chart point', () => {
+    expect(
+      getLowestChartDataPoint([
+        { date: '2024-03', balance: 100 },
+        { date: '2024-04', balance: -50 },
+        { date: '2024-05', balance: 25 },
+      ]),
+    ).toEqual({ date: '2024-04', balance: -50 });
+  });
+
+  it('returns undefined for empty chart data', () => {
+    expect(getLowestChartDataPoint([])).toBeUndefined();
   });
 });

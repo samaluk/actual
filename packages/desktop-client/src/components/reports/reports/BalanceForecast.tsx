@@ -46,6 +46,7 @@ import { useDispatch } from '#redux';
 import {
   buildBalanceForecastChartData,
   countForecastScheduledOccurrences,
+  getLowestChartDataPoint,
 } from './balanceForecastChartData';
 
 export function BalanceForecast() {
@@ -279,6 +280,7 @@ function BalanceForecastInner({ widget }: BalanceForecastInnerProps) {
   }
 
   const endingPoint = chartData.at(-1);
+  const lowestPoint = getLowestChartDataPoint(chartData);
   const hasNegativeBalance = chartData.some(d => d.balance < 0);
   const todayReferenceDate =
     granularity === 'Daily'
@@ -368,6 +370,21 @@ function BalanceForecastInner({ widget }: BalanceForecastInnerProps) {
             <View style={{ color: theme.pageTextLight }}>
               <Trans>Ending Balance</Trans>: {endingPoint.date}
             </View>
+            {lowestPoint && lowestPoint.date !== endingPoint.date ? (
+              <View
+                style={{
+                  color: theme.pageTextLight,
+                  fontSize: 12,
+                  marginTop: 4,
+                }}
+              >
+                <Trans>Lowest visible point</Trans>:{' '}
+                <PrivacyFilter>
+                  {format(lowestPoint.balance, 'financial')}
+                </PrivacyFilter>{' '}
+                ({lowestPoint.date})
+              </View>
+            ) : null}
           </View>
         ) : null}
 

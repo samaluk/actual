@@ -33,6 +33,7 @@ import { useFormat } from '#hooks/useFormat';
 import {
   buildBalanceForecastChartData,
   countForecastScheduledOccurrences,
+  getLowestChartDataPoint,
 } from './balanceForecastChartData';
 
 type BalanceForecastCardProps = {
@@ -121,6 +122,7 @@ export function BalanceForecastCard({
     granularity: 'Monthly',
   });
   const endingPoint = chartData.at(-1);
+  const lowestPoint = getLowestChartDataPoint(chartData);
   const hasNegativeEndingBalance = endingPoint && endingPoint.balance < 0;
   const isUpdatingForecast = isFetching && isPlaceholderData;
   const todayReferenceDate = monthUtils.currentMonth();
@@ -206,6 +208,19 @@ export function BalanceForecastCard({
                   {endingPoint.date}
                 </Block>
               </PrivacyFilter>
+              {lowestPoint && lowestPoint.date !== endingPoint.date ? (
+                <PrivacyFilter activationFilters={[!isCardHovered]}>
+                  <Block
+                    style={{
+                      fontSize: 12,
+                      color: theme.pageTextLight,
+                      marginTop: 4,
+                    }}
+                  >
+                    <Trans>Low</Trans>: {format(lowestPoint.balance, 'financial')}
+                  </Block>
+                </PrivacyFilter>
+              ) : null}
             </View>
           )}
         </View>

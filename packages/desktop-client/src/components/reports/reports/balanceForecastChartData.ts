@@ -128,3 +128,13 @@ export function countForecastScheduledOccurrences(
 
   return occurrenceKeys.size;
 }
+
+export function getLowestChartDataPoint(chartData: ChartDataPoint[]) {
+  return chartData.reduce<ChartDataPoint | undefined>((lowestPoint, point) => {
+    if (!lowestPoint || point.balance < lowestPoint.balance) {
+      return point;
+    }
+
+    return lowestPoint;
+  }, undefined);
+}
